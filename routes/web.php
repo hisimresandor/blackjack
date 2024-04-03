@@ -12,6 +12,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/balance', [BalanceController::class, 'update'])->name('balance.update');
+    Route::post('/balance-game', [BalanceController::class, 'update'])->name('balance-game.update');
 });
 
 require __DIR__.'/auth.php';

@@ -1,16 +1,15 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import { Head } from '@inertiajs/vue3';
+import {Head, router, useForm, usePage} from '@inertiajs/vue3';
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { ref } from 'vue';
 import DangerButton from "@/Components/DangerButton.vue";
 import { reactive } from "vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+import axios from 'axios';
 
-const props = defineProps({
-    balance: {
-        type: Object,
-    },
-});
+const user = usePage().props.auth.user;
 
 function generate_cards() {
     let cards = []
@@ -45,6 +44,13 @@ let deck = []
 let end = reactive(ref(false))
 
 const startGame = () => {
+    form.bet = parseInt(form.bet)
+    if (form.bet > user.balance) {
+        form.bet = user.balance
+    } else if (form.bet < 0) {
+        form.bet = 0
+    }
+    user.balance -= form.bet
 
     let cards = generate_cards()
 
@@ -129,8 +135,31 @@ const hit = () => {
 
 const endGame = () => {
     end.value = true
+
+    if (21 - player_value < 21 - dealer_value) {
+        user.balance += form.bet * 2
+    } else if (21 - player_value == 21 - dealer_value) {
+        user.balance += form.bet
+    }
+
+    postData()
 }
 
+
+const form = useForm({
+    bet: 0,
+});
+
+const postData = async () => {
+    try {
+        const response = await axios.post(route('balance-game.update'), {
+            "balance": user.balance,
+        });
+        console.log(response.data);
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 </script>
 
@@ -154,9 +183,16 @@ const endGame = () => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div v-if="!open" :key="open">
                         <div class="p-6 text-gray-900 text-center">Would you like to play blackjack?</div>
-                        <div class="flex-1">
-                            <div class="w-max-content">
-                            </div>
+                        <div class="w-[200px] mx-auto">
+                            <InputLabel for="bet" value="Bet" />
+                            <TextInput
+                                id="bet"
+                                type="text"
+                                class="mt-1 block w-full"
+                                required
+                                autocomplete="bet"
+                                v-model="form.bet"
+                            />
                         </div>
                         <div class="flex my-10">
                             <div class="flex-1">
@@ -170,6 +206,7 @@ const endGame = () => {
                     </div>
                     <div v-else>
                         <div class="flex-1">
+                            <div class="p-6 text-gray-900 text-center">Bet: {{ form.bet }} HUF</div>
                             <div class="w-max-content">
                                 <div class="flex-1 mb-10" :key="player">
                                     <div class="p-6 text-gray-900 text-center">Player: {{ player_value }}</div>
@@ -180,7 +217,7 @@ const endGame = () => {
                                     </div>
                                 </div>
                                 <div class="flex-1">
-                                    <div class="p-6 text-gray-900 text-center">Dealer: {{ dealer_value }}</div>
+                                    <div class="p-6 text-gray-900 text-center">Dealer: {{ end ? dealer_value : '?' }}</div>
                                     <div class="flex gap-2">
                                         <div class="flex-1" v-for="card in dealer">
                                             <img v-if="end" :src="card[2]" alt="Dealer card" class="w-32 h-48 mx-auto" />
@@ -196,7 +233,7 @@ const endGame = () => {
                             <div class="flex-none" v-if="player_value<21 && !end">
                                 <SecondaryButton class="mx-auto" @click="hit">Hit</SecondaryButton>
                             </div>
-                            <div class="flex-none">
+                            <div class="flex-none" v-if="!end">
                                 <DangerButton class="mx-auto" @click="endGame">End Game</DangerButton>
                             </div>
                             <div class="flex-1">
