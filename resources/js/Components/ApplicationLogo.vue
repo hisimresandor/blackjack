@@ -3,5 +3,5 @@
 </script>
 
 <template>
-    <GlobeAmericasIcon class="w-25 h-25 text-gray-800" />
+    <GlobeAmericasIcon class="w-20 h-20 text-gray-800" />
 </template>
