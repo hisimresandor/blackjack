@@ -18,8 +18,6 @@ defineProps({
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    name: user.name,
-    email: user.email,
     balance: user.balance,
 });
 </script>
@@ -39,7 +37,7 @@ const form = useForm({
                 <InputLabel for="balance" value="Balance" />
 
                 <TextInput
-                    id="name"
+                    id="balance"
                     type="text"
                     class="mt-1 block w-full"
                     v-model="form.balance"
