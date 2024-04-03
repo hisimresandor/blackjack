@@ -9,6 +9,9 @@ class PageController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Blackjack');
+        $balance = auth()->user()->balance;
+        return Inertia::render('Blackjack', [
+            'balance' => $balance
+        ]);
     }
 }

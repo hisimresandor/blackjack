@@ -6,6 +6,12 @@ import { ref } from 'vue';
 import DangerButton from "@/Components/DangerButton.vue";
 import { reactive } from "vue";
 
+const props = defineProps({
+    balance: {
+        type: Object,
+    },
+});
+
 function generate_cards() {
     let cards = []
 
@@ -133,7 +139,14 @@ const endGame = () => {
 
     <Layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Blackjack</h2>
+            <div class="flex">
+                <div class="flex-1">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Blackjack</h2>
+                </div>
+                <div class="flex-1">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight text-right">{{ $page.props.balance }} HUF</h2>
+                </div>
+            </div>
         </template>
 
         <div class="py-12">
