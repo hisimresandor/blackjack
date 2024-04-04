@@ -11,7 +11,6 @@ const form = useForm({
 });
 
 const amounts = [
-    0,
     1000,
     5000,
     10000,
