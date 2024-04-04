@@ -18,23 +18,23 @@ defineProps({
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    balance: user.balance,
+    withdraw: 0,
 });
 </script>
 
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">Balance</h2>
+            <h2 class="text-lg font-medium text-gray-900">Withdraw</h2>
 
             <p class="mt-1 text-sm text-gray-600">
-                Add or withdraw money.
+                Withdraw money from your account.
             </p>
         </header>
 
         <form @submit.prevent="form.patch(route('balance.update'))" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="balance" value="Balance" />
+                <!-- <InputLabel for="balance" value="Balance" />
 
                 <TextInput
                     id="balance"
@@ -44,7 +44,18 @@ const form = useForm({
                     autofocus
                     required
                     autocomplete="balance"
-                />
+                /> -->
+
+                <VSelect
+                    label="Withdraw amount"
+                    id="balance"
+                    class="mt-1 block w-full"
+                    v-model="form.withdraw"
+                    :items="['1000', '5000', '10000']"
+                    required
+                    autocomplete="balance"
+                    variant="solo"
+                ></VSelect>
 
                 <InputError class="mt-2" :message="form.errors.balance" />
             </div>
