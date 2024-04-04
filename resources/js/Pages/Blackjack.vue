@@ -184,15 +184,14 @@ const postData = async () => {
                     <div v-if="!open" :key="open">
                         <div class="p-6 text-gray-900 text-center">Would you like to play blackjack?</div>
                         <div class="w-[200px] mx-auto">
-                            <InputLabel for="bet" value="Bet" />
-                            <TextInput
-                                id="bet"
-                                type="text"
-                                class="mt-1 block w-full"
-                                required
-                                autocomplete="bet"
+                            <VTextField
+                                label="Bet"
+                                variant="solo"
                                 v-model="form.bet"
-                            />
+                                autocomplete="bet"
+                                required
+                                id="bet"
+                            ></VTextField>
                         </div>
                         <div class="flex my-10">
                             <div class="flex-1">
