@@ -45,45 +45,44 @@ const updatePassword = () => {
 
         <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="current_password" value="Current Password" />
-
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
+                <VTextField
+                    label="Current Password"
+                    variant="solo"
                     v-model="form.current_password"
                     type="password"
-                    class="mt-1 block w-full"
+                    ref="currentPasswordInput"
                     autocomplete="current-password"
-                />
+                    required
+                    id="current_password"
+                ></VTextField>
 
                 <InputError :message="form.errors.current_password" class="mt-2" />
             </div>
 
             <div>
-                <InputLabel for="password" value="New Password" />
-
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
+                <VTextField
+                    label="New Password"
+                    variant="solo"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 block w-full"
                     autocomplete="new-password"
-                />
+                    required
+                    id="new_password"
+                ></VTextField>
 
                 <InputError :message="form.errors.password" class="mt-2" />
             </div>
 
             <div>
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
+                <VTextField
+                    label="Confirm Password"
+                    variant="solo"
                     v-model="form.password_confirmation"
                     type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
+                    autocomplete="password-confirmation"
+                    required
+                    id="password_confirmation"
+                ></VTextField>
 
                 <InputError :message="form.errors.password_confirmation" class="mt-2" />
             </div>
