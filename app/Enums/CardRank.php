@@ -15,27 +15,27 @@ enum CardRank: string
     case EIGHT = '8';
     case NINE = '9';
     case TEN = '10';
-    CASE JACK = 'J';
-    CASE QUEEN = 'Q';
-    CASE KING = 'K';
+    case JACK = 'J';
+    case QUEEN = 'Q';
+    case KING = 'K';
 
-    public function toValue(): string
+    public static function getValues(): array
     {
-        return match ($this) {
-            self::ACE => 'A',
-            self::ONE => '1',
-            self::TWO => '2',
-            self::THREE => '3',
-            self::FOUR => '4',
-            self::FIVE => '5',
-            self::SIX => '6',
-            self::SEVEN => '7',
-            self::EIGHT => '8',
-            self::NINE => '9',
-            self::TEN => '10',
-            self::JACK => '10',
-            self::QUEEN => '10',
-            self::KING => '10',
-        };
+        return [
+            self::ACE,
+            self::ONE,
+            self::TWO,
+            self::THREE,
+            self::FOUR,
+            self::FIVE,
+            self::SIX,
+            self::SEVEN,
+            self::EIGHT,
+            self::NINE,
+            self::TEN,
+            self::JACK,
+            self::QUEEN,
+            self::KING,
+        ];
     }
 }
