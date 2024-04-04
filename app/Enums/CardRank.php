@@ -5,7 +5,6 @@ namespace App\Enums;
 enum CardRank: string
 {
     case ACE = 'A';
-    case ONE = '1';
     case TWO = '2';
     case THREE = '3';
     case FOUR = '4';
@@ -23,7 +22,6 @@ enum CardRank: string
     {
         return [
             self::ACE,
-            self::ONE,
             self::TWO,
             self::THREE,
             self::FOUR,
