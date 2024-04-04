@@ -20,7 +20,7 @@ class CardSeeder extends Seeder
                 Card::create([
                     'suit' => $suit->value,
                     'rank' => $rank->value,
-                    'image_url' => "/assets/img/{$rank->value}-{$suit->value}.png"
+                    'image_url' => "/assets/img/cards/{$rank->value}-{$suit->value}.png"
                 ]);
             }
         }
