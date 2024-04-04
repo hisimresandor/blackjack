@@ -6,6 +6,7 @@ import { ref } from 'vue';
 import DangerButton from "@/Components/DangerButton.vue";
 import { reactive } from "vue";
 import axios from 'axios';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
   balance: Object,
@@ -185,6 +186,10 @@ const postWin = async (amount) => {
   }
 };
 
+const reloadPage = () => {
+  location.reload()
+}
+
 </script>
 
 <template>
@@ -258,6 +263,9 @@ const postWin = async (amount) => {
                             </div>
                             <div class="flex-none" v-if="!end">
                                 <DangerButton class="mx-auto" @click="endGame">End Game</DangerButton>
+                            </div>
+                            <div class="flex-none" v-if="end">
+                                <PrimaryButton class="mx-auto" @click="reloadPage">New Game</PrimaryButton>
                             </div>
                             <div class="flex-1">
                             </div>
