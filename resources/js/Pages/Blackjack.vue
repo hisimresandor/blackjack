@@ -36,6 +36,7 @@ const startGame = () => {
         form.bet = 0
     }
     balance.value -= form.bet
+  postData()
 
     let cards = props.deck
 
