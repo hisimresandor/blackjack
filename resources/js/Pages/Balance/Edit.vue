@@ -1,10 +1,9 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { defineProps, ref } from 'vue';
+import DepositBalanceForm from "@/Pages/Balance/Partials/DepositBalanceForm.vue";
+import WithdrawBalanceForm from "@/Pages/Balance/Partials/WithdrawBalanceForm.vue";
 
 defineProps({
     mustVerifyEmail: {
@@ -38,19 +37,11 @@ let balance = ref(user.balance)
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
+                    <DepositBalanceForm class="max-w-xl" />
                 </div>
 
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdatePasswordForm class="max-w-xl" />
-                </div>
-
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <DeleteUserForm class="max-w-xl" />
+                    <WithdrawBalanceForm class="max-w-xl" />
                 </div>
             </div>
         </div>

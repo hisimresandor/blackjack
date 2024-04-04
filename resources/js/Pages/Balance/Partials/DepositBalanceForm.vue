@@ -35,10 +35,10 @@ const postData = async () => {
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">Withdraw</h2>
+            <h2 class="text-lg font-medium text-gray-900">Deposit</h2>
 
             <p class="mt-1 text-sm text-gray-600">
-                Withdraw money from your account.
+                Deposit money into your account.
             </p>
         </header>
 
