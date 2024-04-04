@@ -10,6 +10,7 @@ import TextInput from "@/Components/TextInput.vue";
 import axios from 'axios';
 
 const user = usePage().props.auth.user;
+let balance = ref(user.balance)
 
 function generate_cards() {
     let cards = []
@@ -136,10 +137,20 @@ const hit = () => {
 const endGame = () => {
     end.value = true
 
-    if (21 - player_value < 21 - dealer_value) {
-        user.balance += form.bet * 2
-    } else if (21 - player_value == 21 - dealer_value) {
-        user.balance += form.bet
+    if(player_value <= 21) {
+        if (player_value == 21 && player.length == 2) {
+            if (dealer_value == 21) {
+                user.balance += form.bet
+            } else {
+                user.balance += form.bet * 2.5
+            }
+        } else if (dealer_value > 21) {
+            user.balance += form.bet * 2
+        } else if (dealer_value < player_value) {
+            user.balance += form.bet * 2
+        } else if (dealer_value == player_value) {
+            user.balance += form.bet
+        }
     }
 
     postData()
@@ -155,10 +166,11 @@ const postData = async () => {
         const response = await axios.post(route('balance-game.update'), {
             "balance": user.balance,
         });
-        console.log(response.data);
     } catch (error) {
         console.error(error);
     }
+
+    balance.value = user.balance
 };
 
 </script>
@@ -173,7 +185,7 @@ const postData = async () => {
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">Blackjack</h2>
                 </div>
                 <div class="flex-1">
-                    <h2 class="font-semibold text-xl text-gray-800 leading-tight text-right">{{ $page.props.balance }} HUF</h2>
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight text-right" :key="balance">{{ balance }} HUF</h2>
                 </div>
             </div>
         </template>
