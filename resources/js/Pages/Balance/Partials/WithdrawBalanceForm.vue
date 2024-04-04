@@ -1,25 +1,39 @@
 <script setup>
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
-import Modal from "@/Components/Modal.vue";
-
-defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+import { useForm, usePage } from '@inertiajs/vue3';
+import axios from "axios";
 
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    withdraw: 0,
+    amount: 0,
 });
+
+const amounts = [
+    0,
+    1000,
+    5000,
+    10000,
+    50000,
+    100000,
+    500000,
+    1000000
+];
+
+const withdrawableAmounts = amounts.filter(amount => amount <= user.balance);
+
+const postData = async () => {
+    try {
+        const response = await axios.post(route('balance.withdraw'), {
+            "amount": form.amount,
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+    location.reload();
+};
 </script>
 
 <template>
@@ -32,32 +46,21 @@ const form = useForm({
             </p>
         </header>
 
-        <form @submit.prevent="form.patch(route('balance.update'))" class="mt-6 space-y-6">
+        <form @submit.prevent="postData" class="mt-6 space-y-6">
             <div>
-                <!-- <InputLabel for="balance" value="Balance" />
-
-                <TextInput
-                    id="balance"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.balance"
-                    autofocus
-                    required
-                    autocomplete="balance"
-                /> -->
 
                 <VSelect
                     label="Withdraw amount"
-                    id="balance"
+                    id="withdraw"
                     class="mt-1 block w-full"
-                    v-model="form.withdraw"
-                    :items="['1000', '5000', '10000']"
+                    v-model="form.amount"
+                    :items="withdrawableAmounts"
                     required
-                    autocomplete="balance"
+                    autocomplete="amount"
                     variant="solo"
                 ></VSelect>
 
-                <InputError class="mt-2" :message="form.errors.balance" />
+                <InputError class="mt-2" :message="form.errors.amount" />
             </div>
 
             <div class="flex items-center gap-4">

@@ -32,6 +32,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('index')" :active="route().current('index')">
                                     Blackjack
                                 </NavLink>
+                                <NavLink :href="route('balance.edit')" :active="route().current('balance.edit')">
+                                    Balance
+                                </NavLink>
                             </div>
                         </div>
 
@@ -113,7 +116,10 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('index')" :active="route().current('index')">
-                            Index
+                            Blackjack
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('balance.edit')" :active="route().current('balance.edit')">
+                            Balance
                         </ResponsiveNavLink>
                     </div>
 
