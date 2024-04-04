@@ -4,7 +4,7 @@ namespace App\Http\Requests\Balance;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class DepositRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'balance' => ['required', 'integer', 'min:0'],
+            'amount' => ['required', 'integer', 'min:0']
         ];
     }
 }

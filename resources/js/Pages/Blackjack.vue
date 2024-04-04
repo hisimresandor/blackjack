@@ -1,36 +1,22 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import {Head, useForm, usePage} from '@inertiajs/vue3';
+import {Head, useForm } from '@inertiajs/vue3';
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { ref } from 'vue';
 import DangerButton from "@/Components/DangerButton.vue";
 import { reactive } from "vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import TextInput from "@/Components/TextInput.vue";
 import axios from 'axios';
 
-const user = usePage().props.auth.user;
-let balance = ref(user.balance)
+const props = defineProps({
+  balance: Object,
+  deck: Object,
+});
 
-function generate_cards() {
-    let cards = []
+const form = useForm({
+  bet: null,
+});
 
-    let card_numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-    let card_suits = ['clubs', 'diamonds', 'hearts', 'spades']
-
-    card_suits.forEach(suit => {
-        card_numbers.forEach(number => {
-            let value = number
-            if (number == 'J' || number == 'Q' || number == 'K') {
-                value = '10'
-            }
-            let character = suit.charAt(0).toUpperCase()
-            cards.push([number, value, `/assets/img/cards/${number}-${character}.png`])
-        })
-    })
-
-    return cards
-}
+let balance = ref(props.balance)
 
 let open = ref(false)
 
@@ -45,132 +31,158 @@ let deck = []
 let end = reactive(ref(false))
 
 const startGame = () => {
-    form.bet = parseInt(form.bet)
-    if (form.bet > user.balance) {
-        form.bet = user.balance
-    } else if (form.bet < 0) {
-        form.bet = 0
+  form.bet = parseInt(form.bet)
+  if (form.bet === null || form.bet < 0 || isNaN(form.bet)) {
+    form.bet = 0
+  } else if (form.bet > balance.value) {
+    form.bet = balance.value
+  }
+
+  postBet(form.bet)
+  balance.value -= form.bet
+
+  let cards = props.deck
+
+  let i = 0;
+  let len = cards.length
+
+  while(i < len) {
+    let random = Math.floor(Math.random() * cards.length)
+    deck.push(cards[random])
+    cards.splice(random, 1)
+    i++
+  }
+
+  for (let i = 0; i < 2; i++) {
+    let random = Math.floor(Math.random() * deck.length)
+    player.push(deck[random])
+    deck.splice(random, 1)
+
+    random = Math.floor(Math.random() * deck.length)
+    dealer.push(deck[random])
+    deck.splice(random, 1)
+  }
+  let player_aces = 0
+  let dealer_aces = 0
+  player.forEach(card => {
+    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
+      player_value += parseInt(card.rank)
+    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
+      player_value += 10
+    } else {
+      player_aces++
     }
-    user.balance -= form.bet
-
-    let cards = generate_cards()
-
-    let i = 0;
-    let len = cards.length
-
-    while(i < len) {
-        let random = Math.floor(Math.random() * cards.length)
-        deck.push(cards[random])
-        cards.splice(random, 1)
-        i++
+  })
+  for (let i = 0; i < player_aces; i++) {
+    if (player_value + 11 <= 21) {
+      player_value += 11
+    } else {
+      player_value++
     }
+  }
 
-    for (let i = 0; i < 2; i++) {
-        let random = Math.floor(Math.random() * deck.length)
-        player.push(deck[random])
-        deck.splice(random, 1)
-
-        random = Math.floor(Math.random() * deck.length)
-        dealer.push(deck[random])
-        deck.splice(random, 1)
+  dealer.forEach(card => {
+    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
+      dealer_value += parseInt(card.rank)
+    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
+      dealer_value += 10
+    } else {
+      dealer_aces++
     }
-    let player_aces = 0
-    let dealer_aces = 0
-    player.forEach(card => {
-        if (card[1] != "A") {
-            player_value += parseInt(card[1])
-        } else {
-            player_aces++
-        }
-    })
-    for (let i = 0; i < player_aces; i++) {
-        if (player_value + 11 <= 21) {
-            player_value += 11
-        } else {
-            player_value++
-        }
+  })
+  for (let i = 0; i < dealer_aces; i++) {
+    if (dealer_value + 11 <= 21) {
+        dealer_value += 11
+    } else {
+        dealer_value++
     }
+  }
 
-    dealer.forEach(card => {
-        if (card[1] != "A") {
-            dealer_value += parseInt(card[1])
-        } else {
-            dealer_aces++
-        }
-    })
-    for (let i = 0; i < dealer_aces; i++) {
-        if (dealer_value + 11 <= 21) {
-            dealer_value += 11
-        } else {
-            dealer_value++
-        }
-    }
-
-    open.value = true
+  open.value = true
 }
 
 const hit = () => {
-    if (player_value < 21) {
-        let random = Math.floor(Math.random() * deck.length)
-        player.push(deck[random])
-        deck.splice(random, 1)
+  if (player_value < 21) {
+    let random = Math.floor(Math.random() * deck.length)
+    player.push(deck[random])
+    deck.splice(random, 1)
 
-        player_value = 0
-        let player_aces = 0
-        player.forEach(card => {
-            if (card[1] != "A") {
-                player_value += parseInt(card[1])
-            } else {
-                player_aces++
-            }
-        })
-        for (let i = 0; i < player_aces; i++) {
-            if (player_value + 11 <= 21) {
-                player_value += 11
-            } else {
-                player_value++
-            }
-        }
+    player_value = 0
+    let player_aces = 0
+    player.forEach(card => {
+      if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
+          player_value += parseInt(card.rank)
+      } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
+          player_value += 10
+      } else {
+          player_aces++
+      }
+    })
+    for (let i = 0; i < player_aces; i++) {
+      if (player_value + 11 <= 21) {
+          player_value += 11
+      } else {
+          player_value++
+      }
     }
+  }
 }
+
+let win_amount = 0
 
 const endGame = () => {
-    end.value = true
+  end.value = true
 
-    if(player_value <= 21) {
-        if (player_value == 21 && player.length == 2) {
-            if (dealer_value == 21) {
-                user.balance += form.bet
-            } else {
-                user.balance += form.bet * 2.5
-            }
-        } else if (dealer_value > 21) {
-            user.balance += form.bet * 2
-        } else if (dealer_value < player_value) {
-            user.balance += form.bet * 2
-        } else if (dealer_value == player_value) {
-            user.balance += form.bet
-        }
+  if(player_value <= 21) {
+    if (player_value === 21 && player.length === 2) {
+      if (dealer_value === 21) {
+        win_amount = form.bet
+      } else {
+        win_amount = form.bet * 2.5
+      }
+    } else if (dealer_value > 21) {
+      win_amount = form.bet * 2
+    } else if (dealer_value < player_value) {
+      win_amount = form.bet * 2
+    } else if (dealer_value === player_value) {
+      win_amount = form.bet
     }
+  }
 
-    postData()
+  postWin(win_amount)
+  balance.value += win_amount
+
 }
 
+const postBet = async (amount) => {
+  try {
+    const response = await axios.post(route('balance.bet'), {
+      "amount": amount
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-const form = useForm({
-    bet: 0,
-});
+const postWin = async (amount) => {
+  try {
+    const response = await axios.post(route('balance.win'), {
+      "amount": amount
+    });
+  } catch (error) {
+    console.error(error);
+  }
 
-const postData = async () => {
-    try {
-        const response = await axios.post(route('balance-game.update'), {
-            "balance": user.balance,
-        });
-    } catch (error) {
-        console.error(error);
-    }
-
-    balance.value = user.balance
+  try {
+    const response = await axios.post(route('game.store'), {
+      "player_cards": player,
+      "dealer_cards": dealer,
+      "deck": deck,
+      "bet": form.bet,
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 </script>
@@ -223,7 +235,7 @@ const postData = async () => {
                                     <div class="p-6 text-gray-900 text-center">Player: {{ player_value }}</div>
                                     <div class="flex gap-2">
                                         <div class="flex-1" v-for="card in player">
-                                            <img :src="card[2]" alt="Player card" class="w-32 h-48 mx-auto" />
+                                            <img :src="card.image_url" alt="Player card" class="w-32 h-48 mx-auto" />
                                         </div>
                                     </div>
                                 </div>
@@ -231,7 +243,7 @@ const postData = async () => {
                                     <div class="p-6 text-gray-900 text-center">Dealer: {{ end ? dealer_value : '?' }}</div>
                                     <div class="flex gap-2">
                                         <div class="flex-1" v-for="card in dealer">
-                                            <img v-if="end" :src="card[2]" alt="Dealer card" class="w-32 h-48 mx-auto" />
+                                            <img v-if="end" :src="card.image_url" alt="Dealer card" class="w-32 h-48 mx-auto" />
                                             <img v-else src="/assets/img/cards/BACK.png" alt="Dealer card" class="w-32 h-48 mx-auto">
                                         </div>
                                     </div>
