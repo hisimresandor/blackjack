@@ -21,4 +21,13 @@ class BalanceController extends Controller
 
         return Redirect::route('profile.edit');
     }
+
+    public function withdraw(Request $request): RedirectResponse
+    {
+        $request->user()->balance -= $request->amount;
+
+        $request->user()->save();
+
+        return redirect()->back();
+    }
 }

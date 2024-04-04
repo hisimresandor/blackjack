@@ -18,8 +18,21 @@ defineProps({
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    withdraw: 0,
+    amount: 0,
 });
+
+const amounts = [
+    0,
+    1000,
+    5000,
+    10000,
+    50000,
+    100000,
+    500000,
+    1000000
+];
+
+const withdrawableAmounts = amounts.filter(amount => amount <= user.balance);
 </script>
 
 <template>
@@ -32,28 +45,17 @@ const form = useForm({
             </p>
         </header>
 
-        <form @submit.prevent="form.patch(route('balance.update'))" class="mt-6 space-y-6">
+        <form @submit.prevent="form.patch(route('balance.withdraw'))" class="mt-6 space-y-6">
             <div>
-                <!-- <InputLabel for="balance" value="Balance" />
-
-                <TextInput
-                    id="balance"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.balance"
-                    autofocus
-                    required
-                    autocomplete="balance"
-                /> -->
 
                 <VSelect
                     label="Withdraw amount"
-                    id="balance"
+                    id="withdraw"
                     class="mt-1 block w-full"
-                    v-model="form.withdraw"
-                    :items="['1000', '5000', '10000']"
+                    v-model="form.amount"
+                    :items="withdrawableAmounts"
                     required
-                    autocomplete="balance"
+                    autocomplete="amount"
                     variant="solo"
                 ></VSelect>
 

@@ -4,7 +4,8 @@ import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import UpdateBalanceForm from "@/Pages/Profile/Partials/WithdrawBalanceForm.vue";
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+import { defineProps, ref } from 'vue';
 
 defineProps({
     mustVerifyEmail: {
@@ -14,6 +15,10 @@ defineProps({
         type: String,
     },
 });
+
+const user = usePage().props.auth.user;
+let balance = ref(user.balance)
+
 </script>
 
 <template>
@@ -21,7 +26,14 @@ defineProps({
 
     <Layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>
+            <div class="flex">
+                <div class="flex-1">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>
+                </div>
+                <div class="flex-1">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight text-right" :key="balance">{{ balance }} HUF</h2>
+                </div>
+            </div>
         </template>
 
         <div class="py-12">
