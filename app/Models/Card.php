@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        'suit',
+        'rank',
+        'image_url',
+    ];
 }

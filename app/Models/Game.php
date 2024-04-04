@@ -7,5 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Game extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'player_cards',
+        'dealer_cards',
+        'deck',
+        'bet',
+    ];
+
+    protected $casts = [
+        'player_cards' => 'array',
+        'dealer_cards' => 'array',
+        'deck' => 'array',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
