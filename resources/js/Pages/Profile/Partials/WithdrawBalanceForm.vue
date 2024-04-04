@@ -1,19 +1,8 @@
 <script setup>
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
-import Modal from "@/Components/Modal.vue";
-
-defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+import { useForm, usePage } from '@inertiajs/vue3';
+import axios from "axios";
 
 const user = usePage().props.auth.user;
 
@@ -33,6 +22,18 @@ const amounts = [
 ];
 
 const withdrawableAmounts = amounts.filter(amount => amount <= user.balance);
+
+const postData = async () => {
+    try {
+        const response = await axios.post(route('balance.withdraw'), {
+            "amount": form.amount,
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+    location.reload();
+};
 </script>
 
 <template>
@@ -45,7 +46,7 @@ const withdrawableAmounts = amounts.filter(amount => amount <= user.balance);
             </p>
         </header>
 
-        <form @submit.prevent="form.patch(route('balance.withdraw'))" class="mt-6 space-y-6">
+        <form @submit.prevent="postData" class="mt-6 space-y-6">
             <div>
 
                 <VSelect
@@ -59,7 +60,7 @@ const withdrawableAmounts = amounts.filter(amount => amount <= user.balance);
                     variant="solo"
                 ></VSelect>
 
-                <InputError class="mt-2" :message="form.errors.balance" />
+                <InputError class="mt-2" :message="form.errors.amount" />
             </div>
 
             <div class="flex items-center gap-4">
