@@ -1,6 +1,6 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import {Head, router, useForm, usePage} from '@inertiajs/vue3';
+import {Head, useForm, usePage} from '@inertiajs/vue3';
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { ref } from 'vue';
 import DangerButton from "@/Components/DangerButton.vue";
