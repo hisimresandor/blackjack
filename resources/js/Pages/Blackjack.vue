@@ -32,14 +32,14 @@ let end = reactive(ref(false))
 
 const startGame = () => {
   form.bet = parseInt(form.bet)
-  if (form.bet > balance.value) {
-    form.bet = balance.value
-  } else if (form.bet < 0) {
+  if (form.bet === null || form.bet < 0 || isNaN(form.bet)) {
     form.bet = 0
+  } else if (form.bet > balance.value) {
+    form.bet = balance.value
   }
-  balance.value -= form.bet
 
-  postData()
+  postBet(form.bet)
+  balance.value -= form.bet
 
   let cards = props.deck
 
@@ -65,9 +65,9 @@ const startGame = () => {
   let player_aces = 0
   let dealer_aces = 0
   player.forEach(card => {
-    if (card.rank != "A" && card.rank != "J" && card.rank != "Q" && card.rank != "K") {
+    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
       player_value += parseInt(card.rank)
-    } else if (card.rank == "J" || card.rank == "Q" || card.rank == "K") {
+    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
       player_value += 10
     } else {
       player_aces++
@@ -82,9 +82,9 @@ const startGame = () => {
   }
 
   dealer.forEach(card => {
-    if (card.rank != "A" && card.rank != "J" && card.rank != "Q" && card.rank != "K") {
+    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
       dealer_value += parseInt(card.rank)
-    } else if (card.rank == "J" || card.rank == "Q" || card.rank == "K") {
+    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
       dealer_value += 10
     } else {
       dealer_aces++
@@ -110,9 +110,9 @@ const hit = () => {
     player_value = 0
     let player_aces = 0
     player.forEach(card => {
-      if (card.rank != "A" && card.rank != "J" && card.rank != "Q" && card.rank != "K") {
+      if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
           player_value += parseInt(card.rank)
-      } else if (card.rank == "J" || card.rank == "Q" || card.rank == "K") {
+      } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
           player_value += 10
       } else {
           player_aces++
@@ -128,33 +128,57 @@ const hit = () => {
   }
 }
 
+let win_amount = 0
+
 const endGame = () => {
-    end.value = true
+  end.value = true
 
-    if(player_value <= 21) {
-        if (player_value == 21 && player.length == 2) {
-            if (dealer_value == 21) {
-                balance.value += form.bet
-            } else {
-                balance.value += form.bet * 2.5
-            }
-        } else if (dealer_value > 21) {
-            balance.value += form.bet * 2
-        } else if (dealer_value < player_value) {
-            balance.value += form.bet * 2
-        } else if (dealer_value == player_value) {
-            balance.value += form.bet
-        }
+  if(player_value <= 21) {
+    if (player_value === 21 && player.length === 2) {
+      if (dealer_value === 21) {
+        win_amount = form.bet
+      } else {
+        win_amount = form.bet * 2.5
+      }
+    } else if (dealer_value > 21) {
+      win_amount = form.bet * 2
+    } else if (dealer_value < player_value) {
+      win_amount = form.bet * 2
+    } else if (dealer_value === player_value) {
+      win_amount = form.bet
     }
+  }
 
-    postData()
+  postWin(win_amount)
+  balance.value += win_amount
+
 }
 
-const postData = async () => {
+const postBet = async (amount) => {
+  try {
+    const response = await axios.post(route('balance.bet'), {
+      "amount": amount
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const postWin = async (amount) => {
+  try {
+    const response = await axios.post(route('balance.win'), {
+      "amount": amount
+    });
+  } catch (error) {
+    console.error(error);
+  }
 
   try {
-    const response = await axios.post(route('balance.update'), {
-      "balance": balance.value,
+    const response = await axios.post(route('game.store'), {
+      "player_cards": player,
+      "dealer_cards": dealer,
+      "deck": deck,
+      "bet": form.bet,
     });
   } catch (error) {
     console.error(error);
