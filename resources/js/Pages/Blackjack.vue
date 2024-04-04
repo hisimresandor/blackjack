@@ -151,13 +151,14 @@ const endGame = () => {
 }
 
 const postData = async () => {
-    try {
-        const response = await axios.post(route('balance.update'), {
-            "balance": balance.value,
-        });
-    } catch (error) {
-        console.error(error);
-    }
+
+  try {
+    const response = await axios.post(route('balance.update'), {
+      "balance": balance.value,
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 </script>
