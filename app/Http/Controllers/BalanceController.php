@@ -30,4 +30,13 @@ class BalanceController extends Controller
 
         return redirect()->back();
     }
+
+    public function deposit(Request $request): RedirectResponse
+    {
+        $request->user()->balance += $request->amount;
+
+        $request->user()->save();
+
+        return redirect()->back();
+    }
 }
