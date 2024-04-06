@@ -12,7 +12,7 @@ class PageController extends Controller
     {
         $balance = auth()->user()->balance;
         $deck = Card::all();
-        return Inertia::render('Blackjack', [
+        return Inertia::render('Blackjack/Index', [
             'balance' => $balance,
             'deck' => $deck,
         ]);

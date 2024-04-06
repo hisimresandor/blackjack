@@ -7,6 +7,7 @@ import DangerButton from "@/Components/DangerButton.vue";
 import { reactive } from "vue";
 import axios from 'axios';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ResultModal from "@/Pages/Blackjack/Components/ResultModal.vue";
 
 const props = defineProps({
   balance: Object,
@@ -18,18 +19,16 @@ const form = useForm({
 });
 
 let balance = ref(props.balance)
-
 let open = ref(false)
-
 let player = reactive([])
 let dealer = []
-
 let player_value = 0
 let dealer_value = 0
-
 let deck = []
-
 let end = reactive(ref(false))
+let win = ref(0)
+let win_amount = 0
+let show = reactive(ref(false))
 
 const startGame = () => {
   form.bet = parseInt(form.bet)
@@ -129,8 +128,6 @@ const hit = () => {
   }
 }
 
-let win_amount = 0
-
 const endGame = () => {
   end.value = true
 
@@ -138,21 +135,27 @@ const endGame = () => {
     if (player_value === 21 && player.length === 2) {
       if (dealer_value === 21) {
         win_amount = form.bet
+        win = 1
       } else {
         win_amount = form.bet * 2.5
+        win = 2
       }
     } else if (dealer_value > 21) {
       win_amount = form.bet * 2
+        win = 2
     } else if (dealer_value < player_value) {
       win_amount = form.bet * 2
+        win = 2
     } else if (dealer_value === player_value) {
       win_amount = form.bet
+        win = 1
     }
   }
 
   postWin(win_amount)
   balance.value += win_amount
-
+    show.value = true
+    console.log(win)
 }
 
 const postBet = async (amount) => {
@@ -206,6 +209,8 @@ const reloadPage = () => {
                 </div>
             </div>
         </template>
+
+        <ResultModal :show="show" :win="win" :key="win" @close="show = false" />
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
