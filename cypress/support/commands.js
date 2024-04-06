@@ -32,3 +32,12 @@ Cypress.Commands.add('login', () => {
 
     cy.url().should('eq', 'http://localhost/')
 })
+
+Cypress.Commands.add('deposit', () => {
+    cy.get('a').contains('Balance').click()
+    cy.url().should('contain', '/balance')
+
+    cy.get('.v-field__field').find('[for="deposit"]').parent().click()
+    cy.get('.v-list-item-title').contains('1000').click()
+    cy.get('button').contains('Deposit').click()
+})
