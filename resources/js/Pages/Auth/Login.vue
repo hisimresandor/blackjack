@@ -37,6 +37,18 @@ const submit = () => {
             {{ status }}
         </div>
 
+        <div class="text-center py-3">
+            <p class="text-sm text-gray-600 rounded-md">
+                Don't have a profile yet?
+            </p>
+            <Link
+                :href="route('register')"
+                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Register here!
+            </Link>
+        </div>
+
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
