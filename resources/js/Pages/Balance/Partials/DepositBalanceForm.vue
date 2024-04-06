@@ -47,7 +47,7 @@ const postData = async () => {
 
                 <VSelect
                     label="Deposit amount"
-                    id="withdraw"
+                    id="deposit"
                     class="mt-1 block w-full"
                     v-model="form.amount"
                     :items="depositableAmounts"
@@ -60,7 +60,7 @@ const postData = async () => {
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                <PrimaryButton :disabled="form.processing">Deposit</PrimaryButton>
 
                 <Transition
                     enter-active-class="transition ease-in-out"
