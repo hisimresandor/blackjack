@@ -8,9 +8,6 @@ use Tests\TestCase;
 
 class BalanceTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     public function test_redirect_to_login_when_unauthenticated(): void
     {
         $response = $this->get('/balance');
