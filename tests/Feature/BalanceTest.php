@@ -49,6 +49,31 @@ class BalanceTest extends TestCase
         ]);
     }
 
+    public function test_win_amount_is_added_to_balance(): void
+    {
+        $user = User::factory()->create();
+
+        $request = new Request([
+            'amount' => 1000,
+        ]);
+
+        $response = $this->actingAs($user)->post('/balance/win', $request->all());
+
+        $response
+            ->assertSessionHasNoErrors();
+
+        $user->refresh();
+
+        $this->assertSame(1000, $user->balance);
+        $this->assertDatabaseHas('transactions', [
+            'user_id' => $user->id,
+            'type' => 'win',
+            'amount' => 1000,
+            'balance_before' => 0,
+            'balance_after' => 1000,
+        ]);
+    }
+
     public function test_withdraw_amount_is_subtracted_from_balance(): void
     {
         $user = User::factory()->create([
@@ -70,6 +95,33 @@ class BalanceTest extends TestCase
         $this->assertDatabaseHas('transactions', [
             'user_id' => $user->id,
             'type' => 'withdraw',
+            'amount' => 500,
+            'balance_before' => 1000,
+            'balance_after' => 500,
+        ]);
+    }
+
+    public function test_bet_amount_is_subtracted_from_balance(): void
+    {
+        $user = User::factory()->create([
+            'balance' => 1000,
+        ]);
+
+        $request = new Request([
+            'amount' => 500,
+        ]);
+
+        $response = $this->actingAs($user)->post('/balance/bet', $request->all());
+
+        $response
+            ->assertSessionHasNoErrors();
+
+        $user->refresh();
+
+        $this->assertSame(500, $user->balance);
+        $this->assertDatabaseHas('transactions', [
+            'user_id' => $user->id,
+            'type' => 'bet',
             'amount' => 500,
             'balance_before' => 1000,
             'balance_after' => 500,
