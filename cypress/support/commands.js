@@ -40,4 +40,7 @@ Cypress.Commands.add('deposit', () => {
     cy.get('.v-field__field').find('[for="deposit"]').parent().click()
     cy.get('.v-list-item-title').contains('1000').click()
     cy.get('button').contains('Deposit').click()
+
+    cy.intercept('http://localhost/balance').as('page');
+    cy.wait('@page');
 })
