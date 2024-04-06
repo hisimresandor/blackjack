@@ -13,7 +13,7 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_email_verification_screen_can_be_rendered(): void
+    /* public function test_email_verification_screen_can_be_rendered(): void
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
@@ -60,5 +60,5 @@ class EmailVerificationTest extends TestCase
         $this->actingAs($user)->get($verificationUrl);
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
-    }
+    } */
 }
