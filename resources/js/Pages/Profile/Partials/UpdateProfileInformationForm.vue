@@ -34,32 +34,27 @@ const form = useForm({
 
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="name" value="Name" />
-
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
+                <VTextField
+                    label="Name"
+                    variant="solo"
                     v-model="form.name"
-                    required
-                    autofocus
                     autocomplete="name"
-                />
+                    required
+                    id="name"
+                ></VTextField>
 
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
             <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
+                <VTextField
+                    label="Email"
+                    variant="solo"
                     v-model="form.email"
+                    autocomplete="email"
                     required
-                    autocomplete="username"
-                />
+                    id="email"
+                ></VTextField>
 
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
