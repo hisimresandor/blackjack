@@ -1,5 +1,5 @@
-# <p align="center">Blackjack</p>
-### <p align="center">By <a href="https://github.com/hisimresandor" target="_blank">His Imre Sándor</a></p>
+<h1 align="center">Blackjack</h1>
+<h2 align="center">By <a href="https://github.com/hisimresandor" target="_blank">His Imre Sándor</a></h2>
 
 ---
 
