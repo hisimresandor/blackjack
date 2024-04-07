@@ -8,14 +8,4 @@ enum CardSuit: string
     case DIAMONDS = 'D';
     case CLUBS = 'C';
     case SPADES = 'S';
-
-    public static function getValues(): array
-    {
-        return [
-            self::HEARTS,
-            self::DIAMONDS,
-            self::CLUBS,
-            self::SPADES,
-        ];
-    }
 }
