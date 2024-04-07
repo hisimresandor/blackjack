@@ -109,7 +109,7 @@ const endGame = () => {
         }
     }
 
-    postWin(win_amount)
+    postWin()
     balance.value += win_amount
     show.value = true
 }
@@ -144,7 +144,6 @@ const postWin = async () => {
 const reloadPage = () => {
     location.reload()
 }
-
 </script>
 
 <template>
