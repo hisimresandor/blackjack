@@ -80,7 +80,6 @@ const hit = () => {
   if (player_value < 21) {
         player.push(deck[0])
         deck.splice(0, 1)
-    deck.splice(random, 1)
 
         player_value = value(player)
     }
