@@ -1,13 +1,13 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import {Head, useForm } from '@inertiajs/vue3';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { ref } from 'vue';
 import DangerButton from "@/Components/DangerButton.vue";
+import ResultModal from "@/Pages/Blackjack/Components/ResultModal.vue";
+import {Head, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { reactive } from "vue";
 import axios from 'axios';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import ResultModal from "@/Pages/Blackjack/Components/ResultModal.vue";
 
 const props = defineProps({
     balance: Object,
