@@ -10,8 +10,8 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ResultModal from "@/Pages/Blackjack/Components/ResultModal.vue";
 
 const props = defineProps({
-  balance: Object,
-  deck: Object,
+    balance: Object,
+    deck: Object,
 });
 
 const form = useForm({
@@ -77,7 +77,7 @@ const startGame = () => {
 }
 
 const hit = () => {
-  if (player_value < 21) {
+    if (player_value < 21) {
         player.push(deck[0])
         deck.splice(0, 1)
 
@@ -86,31 +86,31 @@ const hit = () => {
 }
 
 const endGame = () => {
-  end.value = true
+    end.value = true
 
-  if(player_value <= 21) {
-    if (player_value === 21 && player.length === 2) {
-      if (dealer_value === 21) {
+    if(player_value <= 21) {
+        if (player_value === 21 && player.length === 2) {
+            if (dealer_value === 21) {
                 win_amount = form.amount * 2
-        win = 1
-      } else {
+                win = 1
+            } else {
                 win_amount = form.amount * 2.5
-        win = 2
-      }
-    } else if (dealer_value > 21) {
+                win = 2
+            }
+        } else if (dealer_value > 21) {
             win_amount = form.amount * 2
-        win = 2
-    } else if (dealer_value < player_value) {
+            win = 2
+        } else if (dealer_value < player_value) {
             win_amount = form.amount * 2
-        win = 2
-    } else if (dealer_value === player_value) {
+            win = 2
+        } else if (dealer_value === player_value) {
             win_amount = form.amount
-        win = 1
+            win = 1
+        }
     }
-  }
 
-  postWin(win_amount)
-  balance.value += win_amount
+    postWin(win_amount)
+    balance.value += win_amount
     show.value = true
 }
 
@@ -142,7 +142,7 @@ const postWin = async (amount) => {
 };
 
 const reloadPage = () => {
-  location.reload()
+    location.reload()
 }
 
 </script>
