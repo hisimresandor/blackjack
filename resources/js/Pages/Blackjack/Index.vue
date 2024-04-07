@@ -15,7 +15,7 @@ const props = defineProps({
 });
 
 const form = useForm({
-  bet: null,
+    amount: null,
 });
 
 let balance = ref(props.balance)
@@ -53,16 +53,15 @@ const value = (cards) => {
 }
 
 const startGame = () => {
-  form.bet = parseInt(form.bet)
-  if (form.bet === null || form.bet < 0 || isNaN(form.bet)) {
-    form.bet = 0
-  } else if (form.bet > balance.value) {
-    form.bet = balance.value
-  }
+    form.amount = parseInt(form.amount)
+    if (form.amount === null || form.amount < 0 || isNaN(form.amount)) {
+        form.amount = 0
+    } else if (form.amount > balance.value) {
+        form.amount = balance.value
+    }
 
-  postBet(form.bet)
-  balance.value -= form.bet
-
+    postBet(form.amount)
+    balance.value -= form.amount
 
     for (let i = 0; i < 2; i++) {
         player.push(deck[0])
@@ -93,20 +92,20 @@ const endGame = () => {
   if(player_value <= 21) {
     if (player_value === 21 && player.length === 2) {
       if (dealer_value === 21) {
-        win_amount = form.bet
+                win_amount = form.amount * 2
         win = 1
       } else {
-        win_amount = form.bet * 2.5
+                win_amount = form.amount * 2.5
         win = 2
       }
     } else if (dealer_value > 21) {
-      win_amount = form.bet * 2
+            win_amount = form.amount * 2
         win = 2
     } else if (dealer_value < player_value) {
-      win_amount = form.bet * 2
+            win_amount = form.amount * 2
         win = 2
     } else if (dealer_value === player_value) {
-      win_amount = form.bet
+            win_amount = form.amount
         win = 1
     }
   }
@@ -117,35 +116,31 @@ const endGame = () => {
     console.log(win)
 }
 
-const postBet = async (amount) => {
-  try {
-    const response = await axios.post(route('balance.bet'), {
-      "amount": amount
+const postBet = (amount) => {
+    form.post(route('balance.bet'), {
+        preserveScroll: true,
     });
-  } catch (error) {
-    console.error(error);
-  }
 };
 
 const postWin = async (amount) => {
-  try {
-    const response = await axios.post(route('balance.win'), {
-      "amount": amount
-    });
-  } catch (error) {
-    console.error(error);
-  }
+    try {
+        const response = await axios.post(route('balance.win'), {
+            "amount": win_amount,
+        });
+    } catch (error) {
+        console.error(error);
+    }
 
-  try {
-    const response = await axios.post(route('game.store'), {
-      "player_cards": player,
-      "dealer_cards": dealer,
-      "deck": deck,
-      "bet": form.bet,
-    });
-  } catch (error) {
-    console.error(error);
-  }
+    try {
+        const response = await axios.post(route('game.store'), {
+          "player_cards": player,
+          "dealer_cards": dealer,
+          "deck": deck,
+          "bet": form.amount,
+        });
+    } catch (error) {
+      console.error(error);
+    }
 };
 
 const reloadPage = () => {
@@ -180,7 +175,7 @@ const reloadPage = () => {
                             <VTextField
                                 label="Bet"
                                 variant="solo"
-                                v-model="form.bet"
+                                v-model="form.amount"
                                 autocomplete="bet"
                                 required
                                 id="bet"
@@ -198,7 +193,7 @@ const reloadPage = () => {
                     </div>
                     <div v-else>
                         <div class="flex-1">
-                            <div class="p-6 text-gray-900 text-center">Bet: {{ form.bet }} HUF</div>
+                            <div class="p-6 text-gray-900 text-center">Bet: {{ form.amount }} HUF</div>
                             <div class="w-max-content">
                                 <div class="flex-1 mb-10" :key="player">
                                     <div class="p-6 text-gray-900 text-center">Player: {{ player_value }}</div>
