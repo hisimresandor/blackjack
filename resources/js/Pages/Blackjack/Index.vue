@@ -112,7 +112,6 @@ const endGame = () => {
   postWin(win_amount)
   balance.value += win_amount
     show.value = true
-    console.log(win)
 }
 
 const postBet = (amount) => {
