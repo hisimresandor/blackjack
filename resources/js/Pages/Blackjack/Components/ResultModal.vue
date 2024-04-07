@@ -75,6 +75,7 @@ onUnmounted(() => {
                         <div v-if="win === 0" class="text-center text-2xl font-semibold text-gray-800">You lost!</div>
                         <div v-if="win === 1" class="text-center text-2xl font-semibold text-gray-800">It's a draft!</div>
                         <div v-if="win === 2" class="text-center text-2xl font-semibold text-gray-800">You won!</div>
+                        <div v-if="win === 3" class="text-center text-2xl font-semibold text-gray-800">You won with a Blackjack!</div>
                     </div>
                 </Transition>
             </div>

@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(BlackjackServiceController::class)->prefix('/blackjack')->name('blackjack.')->group(function () {
         Route::get('/value', 'getValue')->name('value');
+        Route::get('/result', 'getResult')->name('result');
     });
 });
 

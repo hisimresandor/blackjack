@@ -43,6 +43,20 @@ const value = async (cards) => {
     }
 }
 
+const result = async (player, dealer) => {
+    try {
+        const response = await axios.get(route('blackjack.result'), {
+            params: {
+                player: player,
+                dealer: dealer,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const startGame = async () => {
     form.amount = parseInt(form.amount)
     if (form.amount === null || form.amount < 0 || isNaN(form.amount)) {
@@ -76,28 +90,24 @@ const hit = async () => {
     }
 }
 
-const endGame = () => {
+const endGame = async () => {
     end.value = true
 
-    if(player_value.value <= 21) {
-        if (player_value.value === 21 && player.length === 2) {
-            if (dealer_value.value === 21) {
-                win_amount = form.amount * 2
-                win = 1
-            } else {
-                win_amount = form.amount * 2.5
-                win = 2
-            }
-        } else if (dealer_value.value > 21) {
-            win_amount = form.amount * 2
-            win = 2
-        } else if (dealer_value.value < player_value.value) {
-            win_amount = form.amount * 2
-            win = 2
-        } else if (dealer_value.value === player_value.value) {
+    win.value = await result(player, dealer)
+
+    switch (win) {
+        case 0:
+            win_amount = 0
+            break
+        case 1:
             win_amount = form.amount
-            win = 1
-        }
+            break
+        case 2:
+            win_amount = form.amount * 2
+            break
+        case 3:
+            win_amount = form.amount * 2.5
+            break
     }
 
     postWin()

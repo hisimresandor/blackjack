@@ -9,8 +9,6 @@ class BlackjackService
         $value = 0;
         $aces = 0;
 
-        // return $cards[0]["rank"];
-
         foreach ($cards as $card){
             if ($card["rank"] != "A" && $card["rank"] != "J" && $card["rank"] != "Q" && $card["rank"] != "K") {
                 $value += intval($card["rank"]);
@@ -30,5 +28,31 @@ class BlackjackService
         }
 
         return $value;
+    }
+
+    public function getResult(array $playerCards, array $dealerCards): int
+    {
+        $playerValue = $this->getValue($playerCards);
+        $dealerValue = $this->getValue($dealerCards);
+
+        if ($playerValue <= 21) {
+            if ($playerValue == 21 && count($playerCards) == 2) {
+                if ($dealerValue == 21) {
+                    return 1;
+                } else {
+                    return 3;
+                }
+            } else if ($dealerValue > 21) {
+                return 2;
+            } else if ($playerValue == $dealerValue) {
+                return 1;
+            } else if ($playerValue > $dealerValue) {
+                return 2;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
     }
 }
