@@ -22,37 +22,28 @@ let balance = ref(props.balance)
 let open = ref(false)
 let player = reactive([])
 let dealer = []
-let player_value = 0
-let dealer_value = 0
+let player_value = ref(0)
+let dealer_value = ref(0)
 let deck = props.deck
 let end = reactive(ref(false))
 let win = ref(0)
 let win_amount = 0
 let show = reactive(ref(false))
 
-const value = (cards) => {
-    let value = 0
-    let aces = 0
-    cards.forEach(card => {
-        if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
-            value += parseInt(card.rank)
-        } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
-            value += 10
-        } else {
-            aces++
-        }
-    })
-    for (let i = 0; i < aces; i++) {
-        if (value + 11 <= 21) {
-            value += 11
-        } else {
-            value++
-        }
+const value = async (cards) => {
+    try {
+        const response = await axios.get(route('blackjack.value'), {
+            params: {
+                cards: cards,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
     }
-    return value
 }
 
-const startGame = () => {
+const startGame = async () => {
     form.amount = parseInt(form.amount)
     if (form.amount === null || form.amount < 0 || isNaN(form.amount)) {
         form.amount = 0
@@ -70,40 +61,40 @@ const startGame = () => {
         deck.splice(0, 1)
     }
 
-    player_value = value(player)
-    dealer_value = value(dealer)
+    player_value.value = await value(player)
+    dealer_value.value = await value(dealer)
 
   open.value = true
 }
 
-const hit = () => {
-    if (player_value < 21) {
+const hit = async () => {
+    if (player_value.value < 21) {
         player.push(deck[0])
         deck.splice(0, 1)
 
-        player_value = value(player)
+        player_value.value = await value(player)
     }
 }
 
 const endGame = () => {
     end.value = true
 
-    if(player_value <= 21) {
-        if (player_value === 21 && player.length === 2) {
-            if (dealer_value === 21) {
+    if(player_value.value <= 21) {
+        if (player_value.value === 21 && player.length === 2) {
+            if (dealer_value.value === 21) {
                 win_amount = form.amount * 2
                 win = 1
             } else {
                 win_amount = form.amount * 2.5
                 win = 2
             }
-        } else if (dealer_value > 21) {
+        } else if (dealer_value.value > 21) {
             win_amount = form.amount * 2
             win = 2
-        } else if (dealer_value < player_value) {
+        } else if (dealer_value.value < player_value.value) {
             win_amount = form.amount * 2
             win = 2
-        } else if (dealer_value === player_value) {
+        } else if (dealer_value.value === player_value.value) {
             win_amount = form.amount
             win = 1
         }

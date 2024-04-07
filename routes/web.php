@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\BlackjackController;
+use App\Http\Controllers\BlackjackServiceController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/win', 'win')->name('win');
         Route::post('/deposit', 'deposit')->name('deposit');
         Route::post('/withdraw', 'withdraw')->name('withdraw');
+    });
+
+    Route::controller(BlackjackServiceController::class)->prefix('/blackjack')->name('blackjack.')->group(function () {
+        Route::get('/value', 'getValue')->name('value');
     });
 });
 
