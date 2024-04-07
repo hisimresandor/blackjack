@@ -1,7 +1,5 @@
+# <p align="center">Blackjack</p>
 
-<h1 align="center">Blackjack<br /><h2 align="center">By <a href="https://github.com/hisimresandor" target="_blank">His Imre Sándor</a></h2></h1>
-
----
 
 ## About the project
 
@@ -61,4 +59,19 @@ Some of the features of the game:
     sail npm run dev
     ```
     
-You can now access the application at [http://localhost](http://localhost).
+**You can now access the application** at [http://localhost](http://localhost).
+
+## Running tests
+
+This project uses PHPUnit and Cypress for testing. To run the tests, you can use the following commands:
+
+### PHPUnit
+```bash
+sail artisan test
+```
+
+### Cypress
+To run the Cypress tests, you need to have the application running. You can start the Cypress tests with the following command:
+```bash
+npx cypress open
+```
