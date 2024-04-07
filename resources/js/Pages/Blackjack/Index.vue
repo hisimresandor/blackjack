@@ -114,13 +114,13 @@ const endGame = () => {
     show.value = true
 }
 
-const postBet = (amount) => {
+const postBet = () => {
     form.post(route('balance.bet'), {
         preserveScroll: true,
     });
 };
 
-const postWin = async (amount) => {
+const postWin = async () => {
     try {
         const response = await axios.post(route('balance.win'), {
             "amount": win_amount,
