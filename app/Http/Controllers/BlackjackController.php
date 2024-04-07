@@ -3,11 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Game\StoreRequest;
+use App\Models\Card;
 use App\Models\Game;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
-class GameController extends Controller
+class BlackjackController extends Controller
 {
+    public function index()
+    {
+        $balance = auth()->user()->balance;
+        $deck = Card::all();
+        return Inertia::render('Blackjack/Index', [
+            'balance' => $balance,
+            'deck' => $deck,
+        ]);
+    }
+
     public function store(StoreRequest $request) : RedirectResponse {
         $game = $request->validated();
         $player_cards = [];
