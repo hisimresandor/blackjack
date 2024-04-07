@@ -30,6 +30,28 @@ let win = ref(0)
 let win_amount = 0
 let show = reactive(ref(false))
 
+const value = (cards) => {
+    let value = 0
+    let aces = 0
+    cards.forEach(card => {
+        if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
+            value += parseInt(card.rank)
+        } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
+            value += 10
+        } else {
+            aces++
+        }
+    })
+    for (let i = 0; i < aces; i++) {
+        if (value + 11 <= 21) {
+            value += 11
+        } else {
+            value++
+        }
+    }
+    return value
+}
+
 const startGame = () => {
   form.bet = parseInt(form.bet)
   if (form.bet === null || form.bet < 0 || isNaN(form.bet)) {
@@ -51,41 +73,9 @@ const startGame = () => {
     dealer.push(deck[random])
     deck.splice(random, 1)
   }
-  let player_aces = 0
-  let dealer_aces = 0
-  player.forEach(card => {
-    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
-      player_value += parseInt(card.rank)
-    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
-      player_value += 10
-    } else {
-      player_aces++
-    }
-  })
-  for (let i = 0; i < player_aces; i++) {
-    if (player_value + 11 <= 21) {
-      player_value += 11
-    } else {
-      player_value++
-    }
-  }
 
-  dealer.forEach(card => {
-    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
-      dealer_value += parseInt(card.rank)
-    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
-      dealer_value += 10
-    } else {
-      dealer_aces++
-    }
-  })
-  for (let i = 0; i < dealer_aces; i++) {
-    if (dealer_value + 11 <= 21) {
-        dealer_value += 11
-    } else {
-        dealer_value++
-    }
-  }
+    player_value = value(player)
+    dealer_value = value(dealer)
 
   open.value = true
 }
@@ -96,25 +86,8 @@ const hit = () => {
     player.push(deck[random])
     deck.splice(random, 1)
 
-    player_value = 0
-    let player_aces = 0
-    player.forEach(card => {
-      if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
-          player_value += parseInt(card.rank)
-      } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
-          player_value += 10
-      } else {
-          player_aces++
-      }
-    })
-    for (let i = 0; i < player_aces; i++) {
-      if (player_value + 11 <= 21) {
-          player_value += 11
-      } else {
-          player_value++
-      }
+        player_value = value(player)
     }
-  }
 }
 
 const endGame = () => {
