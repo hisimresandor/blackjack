@@ -64,15 +64,12 @@ const startGame = () => {
   balance.value -= form.bet
 
 
-  for (let i = 0; i < 2; i++) {
-    let random = Math.floor(Math.random() * deck.length)
-    player.push(deck[random])
-    deck.splice(random, 1)
-
-    random = Math.floor(Math.random() * deck.length)
-    dealer.push(deck[random])
-    deck.splice(random, 1)
-  }
+    for (let i = 0; i < 2; i++) {
+        player.push(deck[0])
+        deck.splice(0, 1)
+        dealer.push(deck[0])
+        deck.splice(0, 1)
+    }
 
     player_value = value(player)
     dealer_value = value(dealer)
@@ -82,8 +79,8 @@ const startGame = () => {
 
 const hit = () => {
   if (player_value < 21) {
-    let random = Math.floor(Math.random() * deck.length)
-    player.push(deck[random])
+        player.push(deck[0])
+        deck.splice(0, 1)
     deck.splice(random, 1)
 
         player_value = value(player)
