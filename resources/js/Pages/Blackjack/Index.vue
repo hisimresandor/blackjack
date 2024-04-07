@@ -1,195 +1,149 @@
 <script setup>
 import Layout from '@/Layouts/Layout.vue';
-import {Head, useForm } from '@inertiajs/vue3';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { ref } from 'vue';
 import DangerButton from "@/Components/DangerButton.vue";
+import ResultModal from "@/Pages/Blackjack/Components/ResultModal.vue";
+import {Head, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { reactive } from "vue";
 import axios from 'axios';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
-  balance: Object,
-  deck: Object,
+    balance: Object,
+    deck: Object,
 });
 
 const form = useForm({
-  bet: null,
+    amount: null,
 });
 
 let balance = ref(props.balance)
-
 let open = ref(false)
-
 let player = reactive([])
 let dealer = []
-
 let player_value = 0
 let dealer_value = 0
-
-let deck = []
-
+let deck = props.deck
 let end = reactive(ref(false))
+let win = ref(0)
+let win_amount = 0
+let show = reactive(ref(false))
+
+const value = (cards) => {
+    let value = 0
+    let aces = 0
+    cards.forEach(card => {
+        if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
+            value += parseInt(card.rank)
+        } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
+            value += 10
+        } else {
+            aces++
+        }
+    })
+    for (let i = 0; i < aces; i++) {
+        if (value + 11 <= 21) {
+            value += 11
+        } else {
+            value++
+        }
+    }
+    return value
+}
 
 const startGame = () => {
-  form.bet = parseInt(form.bet)
-  if (form.bet === null || form.bet < 0 || isNaN(form.bet)) {
-    form.bet = 0
-  } else if (form.bet > balance.value) {
-    form.bet = balance.value
-  }
-
-  postBet(form.bet)
-  balance.value -= form.bet
-
-  let cards = props.deck
-
-  let i = 0;
-  let len = cards.length
-
-  while(i < len) {
-    let random = Math.floor(Math.random() * cards.length)
-    deck.push(cards[random])
-    cards.splice(random, 1)
-    i++
-  }
-
-  for (let i = 0; i < 2; i++) {
-    let random = Math.floor(Math.random() * deck.length)
-    player.push(deck[random])
-    deck.splice(random, 1)
-
-    random = Math.floor(Math.random() * deck.length)
-    dealer.push(deck[random])
-    deck.splice(random, 1)
-  }
-  let player_aces = 0
-  let dealer_aces = 0
-  player.forEach(card => {
-    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
-      player_value += parseInt(card.rank)
-    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
-      player_value += 10
-    } else {
-      player_aces++
+    form.amount = parseInt(form.amount)
+    if (form.amount === null || form.amount < 0 || isNaN(form.amount)) {
+        form.amount = 0
+    } else if (form.amount > balance.value) {
+        form.amount = balance.value
     }
-  })
-  for (let i = 0; i < player_aces; i++) {
-    if (player_value + 11 <= 21) {
-      player_value += 11
-    } else {
-      player_value++
-    }
-  }
 
-  dealer.forEach(card => {
-    if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
-      dealer_value += parseInt(card.rank)
-    } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
-      dealer_value += 10
-    } else {
-      dealer_aces++
+    postBet(form.amount)
+    balance.value -= form.amount
+
+    for (let i = 0; i < 2; i++) {
+        player.push(deck[0])
+        deck.splice(0, 1)
+        dealer.push(deck[0])
+        deck.splice(0, 1)
     }
-  })
-  for (let i = 0; i < dealer_aces; i++) {
-    if (dealer_value + 11 <= 21) {
-        dealer_value += 11
-    } else {
-        dealer_value++
-    }
-  }
+
+    player_value = value(player)
+    dealer_value = value(dealer)
 
   open.value = true
 }
 
 const hit = () => {
-  if (player_value < 21) {
-    let random = Math.floor(Math.random() * deck.length)
-    player.push(deck[random])
-    deck.splice(random, 1)
+    if (player_value < 21) {
+        player.push(deck[0])
+        deck.splice(0, 1)
 
-    player_value = 0
-    let player_aces = 0
-    player.forEach(card => {
-      if (card.rank !== "A" && card.rank !== "J" && card.rank !== "Q" && card.rank !== "K") {
-          player_value += parseInt(card.rank)
-      } else if (card.rank === "J" || card.rank === "Q" || card.rank === "K") {
-          player_value += 10
-      } else {
-          player_aces++
-      }
-    })
-    for (let i = 0; i < player_aces; i++) {
-      if (player_value + 11 <= 21) {
-          player_value += 11
-      } else {
-          player_value++
-      }
+        player_value = value(player)
     }
-  }
 }
-
-let win_amount = 0
 
 const endGame = () => {
-  end.value = true
+    end.value = true
 
-  if(player_value <= 21) {
-    if (player_value === 21 && player.length === 2) {
-      if (dealer_value === 21) {
-        win_amount = form.bet
-      } else {
-        win_amount = form.bet * 2.5
-      }
-    } else if (dealer_value > 21) {
-      win_amount = form.bet * 2
-    } else if (dealer_value < player_value) {
-      win_amount = form.bet * 2
-    } else if (dealer_value === player_value) {
-      win_amount = form.bet
+    if(player_value <= 21) {
+        if (player_value === 21 && player.length === 2) {
+            if (dealer_value === 21) {
+                win_amount = form.amount * 2
+                win = 1
+            } else {
+                win_amount = form.amount * 2.5
+                win = 2
+            }
+        } else if (dealer_value > 21) {
+            win_amount = form.amount * 2
+            win = 2
+        } else if (dealer_value < player_value) {
+            win_amount = form.amount * 2
+            win = 2
+        } else if (dealer_value === player_value) {
+            win_amount = form.amount
+            win = 1
+        }
     }
-  }
 
-  postWin(win_amount)
-  balance.value += win_amount
-
+    postWin()
+    balance.value += win_amount
+    show.value = true
 }
 
-const postBet = async (amount) => {
-  try {
-    const response = await axios.post(route('balance.bet'), {
-      "amount": amount
+const postBet = () => {
+    form.post(route('balance.bet'), {
+        preserveScroll: true,
     });
-  } catch (error) {
-    console.error(error);
-  }
 };
 
-const postWin = async (amount) => {
-  try {
-    const response = await axios.post(route('balance.win'), {
-      "amount": amount
-    });
-  } catch (error) {
-    console.error(error);
-  }
+const postWin = async () => {
+    try {
+        const response = await axios.post(route('balance.win'), {
+            "amount": win_amount,
+        });
+    } catch (error) {
+        console.error(error);
+    }
 
-  try {
-    const response = await axios.post(route('game.store'), {
-      "player_cards": player,
-      "dealer_cards": dealer,
-      "deck": deck,
-      "bet": form.bet,
-    });
-  } catch (error) {
-    console.error(error);
-  }
+    try {
+        const response = await axios.post(route('game.store'), {
+          "player_cards": player,
+          "dealer_cards": dealer,
+          "deck": deck,
+          "bet": form.amount,
+        });
+    } catch (error) {
+      console.error(error);
+    }
 };
 
 const reloadPage = () => {
-  location.reload()
+    location.reload()
 }
-
 </script>
 
 <template>
@@ -207,6 +161,8 @@ const reloadPage = () => {
             </div>
         </template>
 
+        <ResultModal :show="show" :win="win" :key="win" @close="show = false" />
+
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -216,7 +172,7 @@ const reloadPage = () => {
                             <VTextField
                                 label="Bet"
                                 variant="solo"
-                                v-model="form.bet"
+                                v-model="form.amount"
                                 autocomplete="bet"
                                 required
                                 id="bet"
@@ -234,7 +190,7 @@ const reloadPage = () => {
                     </div>
                     <div v-else>
                         <div class="flex-1">
-                            <div class="p-6 text-gray-900 text-center">Bet: {{ form.bet }} HUF</div>
+                            <div class="p-6 text-gray-900 text-center">Bet: {{ form.amount }} HUF</div>
                             <div class="w-max-content">
                                 <div class="flex-1 mb-10" :key="player">
                                     <div class="p-6 text-gray-900 text-center">Player: {{ player_value }}</div>

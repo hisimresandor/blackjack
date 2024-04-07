@@ -17,23 +17,4 @@ enum CardRank: string
     case JACK = 'J';
     case QUEEN = 'Q';
     case KING = 'K';
-
-    public static function getValues(): array
-    {
-        return [
-            self::ACE,
-            self::TWO,
-            self::THREE,
-            self::FOUR,
-            self::FIVE,
-            self::SIX,
-            self::SEVEN,
-            self::EIGHT,
-            self::NINE,
-            self::TEN,
-            self::JACK,
-            self::QUEEN,
-            self::KING,
-        ];
-    }
 }

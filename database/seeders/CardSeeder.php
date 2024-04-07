@@ -15,8 +15,8 @@ class CardSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (CardSuit::getValues() as $suit) {
-            foreach (CardRank::getValues() as $rank) {
+        foreach (CardSuit::cases() as $suit) {
+            foreach (CardRank::cases() as $rank) {
                 Card::create([
                     'suit' => $suit->value,
                     'rank' => $rank->value,

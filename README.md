@@ -14,6 +14,7 @@ Some of the features of the game:
 ## Used packages
 
 - [Laravel](https://laravel.com/)
+- [Laravel Breeze](https://laravel.com/docs/8.x/starter-kits#laravel-breeze)
 - [Inertia](https://inertiajs.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Heroicons](https://heroicons.com/)
