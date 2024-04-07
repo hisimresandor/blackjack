@@ -63,7 +63,7 @@ const postData = async () => {
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                <PrimaryButton :disabled="form.processing">Withdraw</PrimaryButton>
 
                 <Transition
                     enter-active-class="transition ease-in-out"
