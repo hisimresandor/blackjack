@@ -41,17 +41,6 @@ const startGame = () => {
   postBet(form.bet)
   balance.value -= form.bet
 
-  let cards = props.deck
-
-  let i = 0;
-  let len = cards.length
-
-  while(i < len) {
-    let random = Math.floor(Math.random() * cards.length)
-    deck.push(cards[random])
-    cards.splice(random, 1)
-    i++
-  }
 
   for (let i = 0; i < 2; i++) {
     let random = Math.floor(Math.random() * deck.length)
